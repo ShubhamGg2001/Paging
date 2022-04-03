@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">PhotosApiApplication</string>
+    <string name="download_url">download_url</string>
+    <string name="url">url</string>
+    <string name="author">author</string>
+    <string name="id">id</string>
+</resources>
