@@ -1,8 +1,10 @@
 package com.example.photosapiapplication.activity
 
+import android.net.ConnectivityManager
 import android.os.Bundle
-import android.util.Log
+import android.os.Handler
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
@@ -17,9 +19,12 @@ import com.example.photosapiapplication.viewmodels.MainViewModel
 import org.json.JSONArray
 import org.json.JSONObject
 
+
 class MainActivity : AppCompatActivity() {
     lateinit var binding:ActivityMainBinding
-     var list:ArrayList<ImageItem> =ArrayList()
+    var handler: Handler? = null
+    var r: Runnable? = null
+    var list:ArrayList<ImageItem> =ArrayList()
     lateinit var viewModel:MainViewModel
     var page:Int=Constants.INITIAL_PAGE
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,20 +49,47 @@ class MainActivity : AppCompatActivity() {
             for (count in 0..jsonArray.length() - 1) {
                 val jsonObject: JSONObject = jsonArray.getJSONObject(count)
                 list.add(
-                    ImageItem(jsonObject.getString(Constants.ID), jsonObject.getString(getString(R.string.author)), jsonObject.getInt("width"), jsonObject.getInt("height"), jsonObject.getString(getString(
-                                            R.string.url)), jsonObject.getString(getString(R.string.download_url))))
+                    ImageItem(jsonObject.getString(Constants.ID), jsonObject.getString(Constants.AUTHOR), jsonObject.getInt(Constants.WIDTH), jsonObject.getInt(Constants.HEIGHT), jsonObject.getString(Constants.URL), jsonObject.getString(Constants.DOWNLOAD_URL)))
             }
             setUpRecyclerView(list)
         })
+        handler = Handler()
+        r = Runnable { // TODO Auto-generated method stub
+            Toast.makeText(
+                this@MainActivity,
+                getString(R.string.inactive_toast),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+        startHandler()
     }
-
     private fun setUpRecyclerView(list: ArrayList<ImageItem>) {
         binding.rclview.adapter = RecyclerAdapter(list,this)
     }
 
     private fun getData(page: Int, limit: Int) {
-        viewModel.getImagesList(page,limit)
+        if(isNetworkAvailable()){ viewModel.getImagesList(page, limit) }
 
     }
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetworkInfo = connectivityManager.activeNetworkInfo
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected
+    }
+    override fun onUserInteraction() {
+        super.onUserInteraction()
+        stopHandler()
+        startHandler()
+    }
+
+    fun stopHandler() {
+        r?.let { handler?.removeCallbacks(it) }
+    }
+
+    fun startHandler() {
+        r?.let { handler?.postDelayed(it, 5000 ) } //for 5 minutes
+    }
+
+
 
 }

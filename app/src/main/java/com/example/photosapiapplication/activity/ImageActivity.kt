@@ -27,5 +27,8 @@ class ImageActivity : AppCompatActivity() {
             val jsonObject:JSONObject=JSONObject(it)
             binding.imageItem=ImageItem(jsonObject.getString(Constants.ID), jsonObject.getString("author"), 0, 0, jsonObject.getString("url"), jsonObject.getString("download_url"))
         })
+        binding.back.setOnClickListener {
+            finish()
+        }
     }
 }

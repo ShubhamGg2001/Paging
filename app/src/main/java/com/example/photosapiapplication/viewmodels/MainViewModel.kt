@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 class MainViewModel :ViewModel(){
     private val imagesRepository:ImagesRepository
     init{
-        imagesRepository=ImagesRepository(RetrofitHelper.apiService)
+        imagesRepository=ImagesRepository(RetrofitHelper.apiService as ApiService)
 
     }
     fun getImagesList(page:Int,limit:Int){

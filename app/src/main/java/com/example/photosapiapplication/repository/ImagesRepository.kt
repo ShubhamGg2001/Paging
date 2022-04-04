@@ -9,7 +9,7 @@ class ImagesRepository(private val apiService: ApiService){
     val imageLiveData=MutableLiveData<String>()
     suspend fun getImages(page:Int, limit:Int){
         val result=apiService.getItems(page,limit)
-        if(result.isSuccessful && result.body() !=null){
+        if(result?.body() !=null){
             imagesLiveData.postValue(result.body())
         }
     }

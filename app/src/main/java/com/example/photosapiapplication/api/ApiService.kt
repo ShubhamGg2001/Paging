@@ -9,7 +9,7 @@ import retrofit2.http.Query
 
 interface ApiService {
     @GET(Constants.LIST_URL)
-    suspend fun getItems(@Query(Constants.PAGE_STRING) page:Int, @Query(Constants.LIMIT_STRING) limit:Int): Response<String>
+    suspend fun getItems(@Query(Constants.PAGE_STRING) page:Int, @Query(Constants.LIMIT_STRING) limit:Int): Response<String>?
     @GET(Constants.ITEM_URL)
     suspend fun getItemWithId(@Path(Constants.ID) id:String?):Response<String>
 }
